@@ -1,15 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import AIAssistant from "./AIAssistant";
 import TopBar from "./TopBar";
 
+import DashboardView from "../components/dashboard/DashboardView";
+
+
+
+
 const cx = (...classes) => classes.filter(Boolean).join(" ");
 
 export default function DashboardLayout() {
-  const location = useLocation();
-  const navigate = useNavigate();
-
   // Left sidebar state
   const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [leftMobileOpen, setLeftMobileOpen] = useState(false);
@@ -17,19 +19,13 @@ export default function DashboardLayout() {
   // Right AI sidebar state
   const [aiOpen, setAiOpen] = useState(false);
 
-  // ✅ Scroll state for TopBar blur
+  // Scroll state for TopBar blur
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const activeModule = useMemo(() => {
-    const path = location.pathname;
-    if (path.startsWith("/inventory")) return "inventory";
-    if (path.startsWith("/sales")) return "sales";
-    if (path.startsWith("/quality")) return "quality";
-    if (path.startsWith("/alerts")) return "alerts";
-    return "production";
-  }, [location.pathname]);
+  // ✅ ACTIVE CONTEXT SESSION
+  const [activeSession, setActiveSession] = useState(null);
 
-  // ✅ If AI opens -> collapse left sidebar + close left mobile overlay
+  // If AI opens -> collapse left sidebar + close left mobile overlay
   useEffect(() => {
     if (aiOpen) {
       setLeftCollapsed(true);
@@ -37,7 +33,7 @@ export default function DashboardLayout() {
     }
   }, [aiOpen]);
 
-  // ✅ Open Left Mobile Sidebar -> close AI
+  // Open Left Mobile Sidebar -> close AI
   const openLeftMobile = () => {
     setLeftMobileOpen(true);
     setAiOpen(false);
@@ -58,7 +54,7 @@ export default function DashboardLayout() {
 
   const closeAi = () => setAiOpen(false);
 
-  // ✅ Desktop collapse toggle:
+  // Desktop collapse toggle
   const toggleLeftCollapsed = () => {
     if (aiOpen) {
       setLeftCollapsed(true);
@@ -67,20 +63,10 @@ export default function DashboardLayout() {
     setLeftCollapsed((v) => !v);
   };
 
-  // ✅ If user expands left sidebar on desktop, close AI
+  // If user expands left sidebar on desktop, close AI
   useEffect(() => {
     if (!leftCollapsed) setAiOpen(false);
   }, [leftCollapsed]);
-
-  const handleModuleChange = (moduleId) => {
-    if (moduleId === "production") navigate("/production");
-    if (moduleId === "inventory") navigate("/inventory");
-    if (moduleId === "sales") navigate("/sales");
-    if (moduleId === "quality") navigate("/quality");
-    if (moduleId === "alerts") navigate("/alerts");
-
-    setLeftMobileOpen(false);
-  };
 
   return (
     <div className="h-screen bg-[#0b1220] text-slate-100 overflow-hidden">
@@ -88,8 +74,8 @@ export default function DashboardLayout() {
 
         {/* LEFT SIDEBAR */}
         <Sidebar
-          activeModule={activeModule}
-          onModuleChange={handleModuleChange}
+          activeModule={activeSession?.contextId}
+          onModuleChange={(session) => setActiveSession(session)}
           leftCollapsed={leftCollapsed}
           setLeftCollapsed={(val) => {
             if (val === false) setAiOpen(false);
@@ -117,7 +103,7 @@ export default function DashboardLayout() {
             onToggleLeftCollapsed={toggleLeftCollapsed}
             aiOpen={aiOpen}
             onToggleAi={toggleAi}
-            isScrolled={isScrolled}   // ✅ PASS SCROLL STATE
+            isScrolled={isScrolled}
           />
 
           {/* MAIN SCROLL AREA */}
@@ -127,12 +113,41 @@ export default function DashboardLayout() {
               setIsScrolled(e.currentTarget.scrollTop > 4);
             }}
           >
-            <Outlet />
+            {/* ACTIVE SESSION HEADER */}
+            {!activeSession && (
+              <div className="text-slate-400 text-center mt-20">
+                Select a workspace from the left
+              </div>
+            )}
+
+            {activeSession && (
+              <div className="mb-6">
+                <h1 className="text-xl font-bold text-white">
+                  {activeSession.contextName}
+                </h1>
+                {/* <div className="text-xs text-slate-400">
+                  Session: {activeSession.sessionId}
+                </div> */}
+              </div>
+            )}
+
+            {/* FUTURE: Analytics / Chat / Tasks go here */}
+           {activeSession && (
+  <DashboardView session={activeSession} />
+)}
+
+
+
           </main>
         </div>
 
         {/* RIGHT AI SIDEBAR */}
-        <AIAssistant open={aiOpen} onClose={closeAi} />
+       <AIAssistant
+  open={aiOpen}
+  onClose={closeAi}
+  session={activeSession}
+/>
+
       </div>
     </div>
   );
