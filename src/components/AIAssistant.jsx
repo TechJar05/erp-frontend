@@ -222,31 +222,17 @@ export default function AIAssistant({ open, onClose, session }) {
 
             {/* Tabs */}
             <div className="p-2 border-b border-slate-800">
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setTab("chat")}
-                  className={cx(
-                    "px-3 py-2 rounded-xl text-sm font-semibold",
-                    tab === "chat"
-                      ? "bg-cyan-600 text-white"
-                      : "bg-slate-900/40 border border-slate-800 text-slate-200"
-                  )}
-                >
-                  Chat
-                </button>
-                <button
-                  onClick={() => setTab("automation")}
-                  className={cx(
-                    "px-3 py-2 rounded-xl text-sm font-semibold",
-                    tab === "automation"
-                      ? "bg-cyan-600 text-white"
-                      : "bg-slate-900/40 border border-slate-800 text-slate-200"
-                  )}
-                >
-                  Automation
-                </button>
-              </div>
-            </div>
+  <button
+    onClick={() => setTab("chat")}
+    className={cx(
+      "w-full px-4 py-2 rounded-xl text-sm font-semibold flex items-center justify-center",
+      "bg-cyan-600 text-white"
+    )}
+  >
+    Chat
+  </button>
+</div>
+
 
             {/* Body */}
             {tab === "chat" ? (
@@ -313,16 +299,17 @@ export default function AIAssistant({ open, onClose, session }) {
                       disabled={loading}
                     />
                     <button
-                      className="w-11 h-11 rounded-xl bg-cyan-600 text-white"
-                      disabled={loading || !input.trim()}
-                      type="submit"
-                    >
-                      {loading ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Send className="w-4 h-4" />
-                      )}
-                    </button>
+  className="w-10 h-10 rounded-xl bg-cyan-600 text-white flex items-center justify-center"
+  disabled={loading || !input.trim()}
+  type="submit"
+>
+  {loading ? (
+    <Loader2 className="w-4 h-4 animate-spin" />
+  ) : (
+    <Send className="w-5 h-5" />
+  )}
+</button>
+
                   </div>
                 </form>
               </>

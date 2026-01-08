@@ -292,10 +292,6 @@ export default function DashboardView({ session }) {
             title={chart.title}
             right={<SoftBadge tone="slate">{chart.metric}</SoftBadge>}
           >
-            <div className="mb-3 text-xs text-slate-400">
-              {/* placeholder until Recharts */}
-              Preview (table) — replace with Recharts later
-            </div>
            <ChartRenderer chart={chart} />
 
           </Card>

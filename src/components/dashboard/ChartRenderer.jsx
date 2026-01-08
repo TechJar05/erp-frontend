@@ -72,9 +72,20 @@ export default function ChartRenderer({ chart }) {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey={x} />
+            <XAxis
+  dataKey={x}
+  interval={0}
+  tickFormatter={(v) =>
+    typeof v === "string" ? v.slice(0, 6) + "…" : v
+  }
+/>
+
             <YAxis />
-            <Tooltip />
+            <Tooltip
+  formatter={(value, name) => [value, name]}
+  labelFormatter={(label) => `ID: ${label}`}
+/>
+
             <Legend />
             <Bar dataKey={y} fill="#22d3ee" />
           </BarChart>
@@ -89,9 +100,20 @@ export default function ChartRenderer({ chart }) {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey={x} />
+            <XAxis
+  dataKey={x}
+  interval={0}
+  tickFormatter={(v) =>
+    typeof v === "string" ? v.slice(0, 6) + "…" : v
+  }
+/>
+
             <YAxis />
-            <Tooltip />
+           <Tooltip
+  formatter={(value, name) => [value, name]}
+  labelFormatter={(label) => `ID: ${label}`}
+/>
+
             <Legend />
             <Line dataKey={y} stroke="#60a5fa" strokeWidth={3} />
           </LineChart>
@@ -112,7 +134,6 @@ export default function ChartRenderer({ chart }) {
               dataKey={y}
               nameKey={x}
               outerRadius={100}
-              label
             >
               {data.map((_, i) => (
                 <Cell
