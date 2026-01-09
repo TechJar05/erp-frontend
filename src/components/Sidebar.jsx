@@ -272,6 +272,7 @@ export default function Sidebar({
   onModuleChange,
 
   leftCollapsed,
+  // eslint-disable-next-line no-unused-vars
   setLeftCollapsed,
 
   leftMobileOpen,
